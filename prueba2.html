@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EIP Gabriela Morreale - Curso 2024-2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .edit-mode-toggle {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-mode-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+        }
+
+        .edit-mode-toggle.active {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .nav-buttons {
+            list-style: none;
+        }
+
+        .nav-button {
+            margin-bottom: 10px;
+        }
+
+        .nav-button button {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .nav-button button.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .nav-button button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-button button:hover::before {
+            left: 100%;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 40px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #e74c3c);
+            border-radius: 2px;
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .edit-mode .edit-button {
+            display: block;
+        }
+
+        .edit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.3);
+        }
+
+        .section-content {
+            line-height: 1.8;
+            color: #34495e;
+            font-size: 1.1em;
+        }
+
+        .section-content.editing {
+            border: 2px dashed #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .section-content h3 {
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+            font-size: 1.4em;
+        }
+
+        .section-content ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .section-content li {
+            margin-bottom: 8px;
+        }
+
+        .editor-toolbar {
+            display: none;
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .editor-toolbar.active {
+            display: flex;
+        }
+
+        .editor-toolbar button {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .editor-toolbar button:hover {
+            background: #4a5d6e;
+        }
+
+        .editor-actions {
+            display: none;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .editor-actions.active {
+            display: flex;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+        }
+
+        .editable-area {
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+            outline: none;
+            resize: vertical;
+        }
+
+        .editable-area:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(52, 73, 94, 0.1);
+        }
+
+        .nav-controls button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .prev-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .nav-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1001;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db, #e74c3c);
+            width: 14.28%;
+            transition: width 0.3s ease;
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1002;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1003;
+            transform: translateX(300px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .content-section {
+                padding: 30px 20px;
+            }
+
+            .section-header h2 {
+                font-size: 2em;
+            }
+
+            .editor-toolbar {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="notification" id="notification">
+        ¡Cambios guardados correctamente!
+    </div>
+
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        ☰
+    </button>
+
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1>EIP Gabriela Morreale</h1>
+                <p>Curso 2024-2025</p>
+            </div>
+            
+            <button class="edit-mode-toggle" onclick="toggleEditMode()" id="editModeToggle">
+                📝 Activar Edición
+            </button>
+            
+            <ul class="nav-buttons">
+                <li class="nav-button">
+                    <button onclick="showSection(0)" class="active">1. Introducción</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(1)">2. Órganos</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(2)">3. Presentación</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(3)">4. Funcionamiento</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(4)">5. Actividades Extraescolares</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(5)">6. Actividades Propias</button>
+                </li>
+                <li class="nav-button">
+                    <button onclick="showSection(6)">7. Otras Informaciones</button>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="mainContent">
+            <!-- Sección 1: Introducción -->
+            <section class="content-section active" id="section-0">
+                <button class="edit-button" onclick="editSection(0)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Introducción</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-0">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-0">
+                    <p>Bienvenidos al <strong>EIP Gabriela Morreale</strong> para el curso académico 2024-2025.</p>
+                    
+                    <p>Esta presentación interactiva le permitirá navegar por las diferentes secciones de nuestro centro educativo, conocer su funcionamiento, órganos de gobierno, actividades y toda la información relevante para el presente curso.</p>
+                    
+                    <h3>¿Qué encontrará en esta guía?</h3>
+                    <ul>
+                        <li><strong>Órganos de gobierno:</strong> Estructura organizativa del centro</li>
+                        <li><strong>Presentación general:</strong> Misión, visión y valores</li>
+                        <li><strong>Funcionamiento:</strong> Normativa y procedimientos</li>
+                        <li><strong>Actividades extraescolares:</strong> Oferta complementaria</li>
+                        <li><strong>Actividades propias:</strong> Programas específicos del centro</li>
+                        <li><strong>Información adicional:</strong> Contacto y recursos</li>
+                    </ul>
+                    
+                    <p>Utilice los botones de navegación del lateral izquierdo o los controles inferiores para moverse entre las secciones.</p>
+                </div>
+                <div class="editor-actions" id="actions-0">
+                    <button class="save-btn" onclick="saveSection(0)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(0)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()" disabled>← Anterior</button>
+                    <span>Sección 1 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 2: Órganos -->
+            <section class="content-section" id="section-1">
+                <button class="edit-button" onclick="editSection(1)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Órganos</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-1">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-1">
+                    <p>Los órganos de gobierno y coordinación docente del EIP Gabriela Morreale están estructurados para garantizar una gestión eficaz y una educación de calidad.</p>
+                    
+                    <h3>Órganos de Gobierno</h3>
+                    <ul>
+                        <li><strong>Dirección:</strong> Órgano ejecutivo de gobierno</li>
+                        <li><strong>Consejo Escolar:</strong> Órgano de participación de la comunidad educativa</li>
+                        <li><strong>Claustro de Profesores:</strong> Órgano propio de participación de los profesores</li>
+                    </ul>
+                    
+                    <h3>Órganos de Coordinación Docente</h3>
+                    <ul>
+                        <li><strong>Equipos de ciclo:</strong> Coordinación por etapas educativas</li>
+                        <li><strong>Comisión de Coordinación Pedagógica:</strong> Coordinación curricular</li>
+                        <li><strong>Departamento de Orientación:</strong> Apoyo educativo y orientación</li>
+                    </ul>
+                    
+                    <p>Cada órgano tiene funciones específicas definidas por la normativa vigente y el proyecto educativo del centro.</p>
+                </div>
+                <div class="editor-actions" id="actions-1">
+                    <button class="save-btn" onclick="saveSection(1)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(1)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 2 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 3: Presentación -->
+            <section class="content-section" id="section-2">
+                <button class="edit-button" onclick="editSection(2)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Presentación</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-2">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-2">
+                    <p>El <strong>EIP Gabriela Morreale</strong> es un centro educativo comprometido con la excelencia académica y el desarrollo integral de nuestro alumnado.</p>
+                    
+                    <h3>Nuestra Misión</h3>
+                    <p>Proporcionar una educación de calidad que forme personas competentes, responsables y comprometidas con su entorno, desarrollando todas sus capacidades y potencialidades.</p>
+                    
+                    <h3>Nuestra Visión</h3>
+                    <p>Ser un centro educativo de referencia, innovador y participativo, que prepare a sus estudiantes para los retos del siglo XXI con una sólida formación académica y humana.</p>
+                    
+                    <h3>Nuestros Valores</h3>
+                    <ul>
+                        <li><strong>Respeto:</strong> Por la diversidad y la dignidad de todas las personas</li>
+                        <li><strong>Responsabilidad:</strong> En el aprendizaje y la convivencia</li>
+                        <li><strong>Solidaridad:</strong> Y compromiso con la comunidad</li>
+                        <li><strong>Innovación:</strong> En metodologías y recursos educativos</li>
+                        <li><strong>Participación:</strong> De toda la comunidad educativa</li>
+                    </ul>
+                </div>
+                <div class="editor-actions" id="actions-2">
+                    <button class="save-btn" onclick="saveSection(2)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(2)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 3 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 4: Funcionamiento -->
+            <section class="content-section" id="section-3">
+                <button class="edit-button" onclick="editSection(3)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Funcionamiento</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-3">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-3">
+                    <p>El funcionamiento del centro se rige por la normativa educativa vigente y nuestro Reglamento de Régimen Interior.</p>
+                    
+                    <h3>Horarios</h3>
+                    <ul>
+                        <li><strong>Jornada lectiva:</strong> De 9:00 a 14:00 horas</li>
+                        <li><strong>Recreo:</strong> De 11:30 a 12:00 horas</li>
+                        <li><strong>Atención a familias:</strong> Martes de 14:00 a 15:00 horas</li>
+                    </ul>
+                    
+                    <h3>Normas de Convivencia</h3>
+                    <ul>
+                        <li>Respeto hacia todas las personas de la comunidad educativa</li>
+                        <li>Puntualidad en la asistencia a clase</li>
+                        <li>Cuidado de las instalaciones y materiales</li>
+                        <li>Participación activa en las actividades del centro</li>
+                    </ul>
+                    
+                    <h3>Procedimientos</h3>
+                    <p>Todos los procedimientos administrativos y educativos están claramente definidos y son comunicados a las familias a través de los canales oficiales del centro.</p>
+                </div>
+                <div class="editor-actions" id="actions-3">
+                    <button class="save-btn" onclick="saveSection(3)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(3)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 4 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 5: Actividades Extraescolares -->
+            <section class="content-section" id="section-4">
+                <button class="edit-button" onclick="editSection(4)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Actividades Extraescolares</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-4">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-4">
+                    <p>Nuestro centro ofrece una amplia variedad de actividades extraescolares que complementan la formación académica y contribuyen al desarrollo integral del alumnado.</p>
+                    
+                    <h3>Actividades Deportivas</h3>
+                    <ul>
+                        <li>Fútbol sala</li>
+                        <li>Baloncesto</li>
+                        <li>Atletismo</li>
+                        <li>Natación</li>
+                    </ul>
+                    
+                    <h3>Actividades Artísticas y Culturales</h3>
+                    <ul>
+                        <li>Coro escolar</li>
+                        <li>Teatro</li>
+                        <li>Artes plásticas</li>
+                        <li>Taller de lectura</li>
+                    </ul>
+                    
+                    <h3>Actividades Tecnológicas</h3>
+                    <ul>
+                        <li>Robótica educativa</li>
+                        <li>Programación básica</li>
+                        <li>Taller de ciencias</li>
+                    </ul>
+                    
+                    <p>Las inscripciones se realizan al comienzo de cada trimestre. Todas las actividades son voluntarias y tienen un coste adicional que se comunica previamente a las familias.</p>
+                </div>
+                <div class="editor-actions" id="actions-4">
+                    <button class="save-btn" onclick="saveSection(4)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(4)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 5 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 6: Actividades Propias -->
+            <section class="content-section" id="section-5">
+                <button class="edit-button" onclick="editSection(5)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Actividades Propias</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-5">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-5">
+                    <p>El centro desarrolla actividades propias que forman parte de nuestro proyecto educativo y que enriquecen la experiencia escolar de nuestro alumnado.</p>
+                    
+                    <h3>Proyectos Pedagógicos</h3>
+                    <ul>
+                        <li><strong>Proyecto bilingüe:</strong> Enseñanza en inglés en áreas no lingüísticas</li>
+                        <li><strong>Huerto escolar:</strong> Aprendizaje medioambiental práctico</li>
+                        <li><strong>Mediación escolar:</strong> Resolución pacífica de conflictos</li>
+                        <li><strong>Biblioteca activa:</strong> Fomento de la lectura</li>
+                    </ul>
+                    
+                    <h3>Celebraciones y Eventos</h3>
+                    <ul>
+                        <li>Día de la Paz</li>
+                        <li>Semana Cultural</li>
+                        <li>Festival de Navidad</li>
+                        <li>Graduación de 6º</li>
+                        <li>Día del Libro</li>
+                    </ul>
+                    
+                    <h3>Salidas Educativas</h3>
+                    <p>Organizamos salidas didácticas adaptadas a cada nivel educativo que complementan el currículo y proporcionan experiencias de aprendizaje enriquecedoras.</p>
+                </div>
+                <div class="editor-actions" id="actions-5">
+                    <button class="save-btn" onclick="saveSection(5)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(5)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 6 de 7</span>
+                    <button class="next-btn" onclick="nextSection()">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección 7: Otras Informaciones -->
+            <section class="content-section" id="section-6">
+                <button class="edit-button" onclick="editSection(6)">✏️ Editar</button>
+                <div class="section-header">
+                    <h2>Otras Informaciones</h2>
+                </div>
+                <div class="editor-toolbar" id="toolbar-6">
+                    <button onclick="formatText('bold')"><b>B</b></button>
+                    <button onclick="formatText('italic')"><i>I</i></button>
+                    <button onclick="formatText('underline')"><u>U</u></button>
+                    <button onclick="insertHeading()">H3</button>
+                    <button onclick="insertList()">Lista</button>
+                    <button onclick="insertLink()">🔗 Enlace</button>
+                </div>
+                <div class="section-content" id="content-6">
+                    <h3>Información de Contacto</h3>
+                    <p><strong>Dirección:</strong> [Dirección del centro]</p>
+                    <p><strong>Teléfono:</strong> [Número de teléfono]</p>
+                    <p><strong>Email:</strong> [Correo electrónico]</p>
+                    <p><strong>Página web:</strong> [Sitio web del centro]</p>
+                    
+                    <h3>Servicios Complementarios</h3>
+                    <ul>
+                        <li><strong>Comedor escolar:</strong> Menús equilibrados y adaptados</li>
+                        <li><strong>Transporte escolar:</strong> Rutas disponibles</li>
+                        <li><strong>Madrugadores:</strong> Acogida temprana</li>
+                        <li><strong>Apoyo educativo:</strong> Atención a la diversidad</li>
+                    </ul>
+                    
+                    <h3>Recursos y Enlaces</h3>
+                    <ul>
+                        <li>Portal de la Comunidad de Madrid</li>
+                        <li>Plataforma educativa del centro</li>
+                        <li>AMPA - Asociación de Madres y Padres</li>
+                        <li>Consejería de Educación</li>
+                    </ul>
+                    
+                    <h3>Documentos Importantes</h3>
+                    <ul>
+                        <li>Proyecto Educativo de Centro (PEC)</li>
+                        <li>Programación General Anual (PGA)</li>
+                        <li>Reglamento de Régimen Interior (RRI)</li>
+                        <li>Plan de Convivencia</li>
+                        <li>Memoria Anual</li>
+                    </ul>
+                    
+                    <p><strong>¡Gracias por su interés en el EIP Gabriela Morreale!</strong></p>
+                    <p>Para cualquier consulta adicional, no dude en ponerse en contacto con nosotros a través de los canales oficiales del centro.</p>
+                </div>
+                <div class="editor-actions" id="actions-6">
+                    <button class="save-btn" onclick="saveSection(6)">💾 Guardar</button>
+                    <button class="cancel-btn" onclick="cancelEdit(6)">❌ Cancelar</button>
+                </div>
+                
+                <div class="nav-controls">
+                    <button class="prev-btn" onclick="prevSection()">← Anterior</button>
+                    <span>Sección 7 de 7</span>
+                    <button class="next-btn" onclick="nextSection()" disabled>Siguiente →</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let currentSection = 0;
+        const totalSections = 7;
+        let editMode = false;
+        let originalContent = {};
+        let currentEditingSection = null;
+
+        // Navigation functions
+        function showSection(sectionIndex) {
+            // Cancel any active editing first
+            if (currentEditingSection !== null) {
+                cancelEdit(currentEditingSection);
+            }
+            
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-button button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`section-${sectionIndex}`).classList.add('active');
+            
+            // Add active class to corresponding button
+            document.querySelectorAll('.nav-button button')[sectionIndex].classList.add('active');
+            
+            // Update current section
+            currentSection = sectionIndex;
+            
+            // Update progress bar
+            updateProgressBar();
+            
+            // Update navigation buttons
+            updateNavButtons();
+            
+            // Close sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections - 1) {
+                showSection(currentSection + 1);
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 0) {
+                showSection(currentSection - 1);
+            }
+        }
+
+        function updateProgressBar() {
+            const progressWidth = ((currentSection + 1) / totalSections) * 100;
+            document.getElementById('progressFill').style.width = progressWidth + '%';
+        }
+
+        function updateNavButtons() {
+            // Update all prev buttons
+            document.querySelectorAll('.prev-btn').forEach(btn => {
+                btn.disabled = currentSection === 0;
+            });
+            
+            // Update all next buttons
+            document.querySelectorAll('.next-btn').forEach(btn => {
+                btn.disabled = currentSection === totalSections - 1;
+            });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Edit mode functions
+        function toggleEditMode() {
+            editMode = !editMode;
+            const toggle = document.getElementById('editModeToggle');
+            const body = document.body;
+            
+            if (editMode) {
+                body.classList.add('edit-mode');
+                toggle.textContent = '👁️ Modo Vista';
+                toggle.classList.add('active');
+            } else {
+                body.classList.remove('edit-mode');
+                toggle.textContent = '📝 Activar Edición';
+                toggle.classList.remove('active');
+                
+                // Cancel any active editing
+                if (currentEditingSection !== null) {
+                    cancelEdit(currentEditingSection);
+                }
+            }
+        }
+
+        function editSection(sectionIndex) {
+            if (!editMode) return;
+            
+            // Cancel any other editing first
+            if (currentEditingSection !== null && currentEditingSection !== sectionIndex) {
+                cancelEdit(currentEditingSection);
+            }
+            
+            currentEditingSection = sectionIndex;
+            const contentDiv = document.getElementById(`content-${sectionIndex}`);
+            const toolbar = document.getElementById(`toolbar-${sectionIndex}`);
+            const actions = document.getElementById(`actions-${sectionIndex}`);
+            
+            // Store original content
+            originalContent[sectionIndex] = contentDiv.innerHTML;
+            
+            // Create editable textarea
+            const currentContent = contentDiv.innerHTML;
+            contentDiv.innerHTML = `<textarea class="editable-area" id="editor-${sectionIndex}">${currentContent}</textarea>`;
+            
+            // Show toolbar and actions
+            toolbar.classList.add('active');
+            actions.classList.add('active');
+            contentDiv.classList.add('editing');
+            
+            // Focus on textarea
+            document.getElementById(`editor-${sectionIndex}`).focus();
+        }
+
+        function saveSection(sectionIndex) {
+            const editor = document.getElementById(`editor-${sectionIndex}`);
+            const contentDiv = document.getElementById(`content-${sectionIndex}`);
+            const toolbar = document.getElementById(`toolbar-${sectionIndex}`);
+            const actions = document.getElementById(`actions-${sectionIndex}`);
+            
+            if (!editor) return;
+            
+            // Get new content and update
+            const newContent = editor.value;
+            contentDiv.innerHTML = newContent;
+            
+            // Hide toolbar and actions
+            toolbar.classList.remove('active');
+            actions.classList.remove('active');
+            contentDiv.classList.remove('editing');
+            
+            // Clear editing state
+            currentEditingSection = null;
+            delete originalContent[sectionIndex];
+            
+            // Show notification
+            showNotification('¡Cambios guardados correctamente!');
+        }
+
+        function cancelEdit(sectionIndex) {
+            const contentDiv = document.getElementById(`content-${sectionIndex}`);
+            const toolbar = document.getElementById(`toolbar-${sectionIndex}`);
+            const actions = document.getElementById(`actions-${sectionIndex}`);
+            
+            // Restore original content
+            if (originalContent[sectionIndex]) {
+                contentDiv.innerHTML = originalContent[sectionIndex];
+                delete originalContent[sectionIndex];
+            }
+            
+            // Hide toolbar and actions
+            toolbar.classList.remove('active');
+            actions.classList.remove('active');
+            contentDiv.classList.remove('editing');
+            
+            // Clear editing state
+            currentEditingSection = null;
+        }
+
+        // Formatting functions
+        function formatText(command) {
+            if (currentEditingSection === null) return;
+            
+            const editor = document.getElementById(`editor-${currentEditingSection}`);
+            if (!editor) return;
+            
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const selectedText = editor.value.substring(start, end);
+            
+            if (!selectedText) {
+                alert('Por favor, selecciona el texto que quieres formatear.');
+                return;
+            }
+            
+            let formattedText = '';
+            switch (command) {
+                case 'bold':
+                    formattedText = `<strong>${selectedText}</strong>`;
+                    break;
+                case 'italic':
+                    formattedText = `<em>${selectedText}</em>`;
+                    break;
+                case 'underline':
+                    formattedText = `<u>${selectedText}</u>`;
+                    break;
+            }
+            
+            editor.value = editor.value.substring(0, start) + formattedText + editor.value.substring(end);
+            editor.focus();
+        }
+
+        function insertHeading() {
+            if (currentEditingSection === null) return;
+            
+            const editor = document.getElementById(`editor-${currentEditingSection}`);
+            if (!editor) return;
+            
+            const headingText = prompt('Introduce el texto del encabezado:');
+            if (headingText) {
+                const cursorPos = editor.selectionStart;
+                const heading = `<h3>${headingText}</h3>`;
+                editor.value = editor.value.substring(0, cursorPos) + heading + editor.value.substring(cursorPos);
+                editor.focus();
+            }
+        }
+
+        function insertList() {
+            if (currentEditingSection === null) return;
+            
+            const editor = document.getElementById(`editor-${currentEditingSession}`);
+            if (!editor) return;
+            
+            const listItems = prompt('Introduce los elementos de la lista separados por comas:');
+            if (listItems) {
+                const items = listItems.split(',').map(item => `<li>${item.trim()}</li>`).join('\n');
+                const list = `<ul>\n${items}\n</ul>`;
+                const cursorPos = editor.selectionStart;
+                editor.value = editor.value.substring(0, cursorPos) + list + editor.value.substring(cursorPos);
+                editor.focus();
+            }
+        }
+
+        function insertLink() {
+            if (currentEditingSection === null) return;
+            
+            const editor = document.getElementById(`editor-${currentEditingSection}`);
+            if (!editor) return;
+            
+            const url = prompt('Introduce la URL del enlace:');
+            if (url) {
+                const text = prompt('Introduce el texto del enlace:') || url;
+                const link = `<a href="${url}" target="_blank">${text}</a>`;
+                const cursorPos = editor.selectionStart;
+                editor.value = editor.value.substring(0, cursorPos) + link + editor.value.substring(cursorPos);
+                editor.focus();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Don't interfere when editing
+            if (currentEditingSection !== null) return;
+            
+            if (e.key === 'ArrowLeft') {
+                prevSection();
+            } else if (e.key === 'ArrowRight') {
+                nextSection();
+            } else if (e.key === 'Escape') {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('show');
+                }
+            } else if (e.key === 'e' && e.ctrlKey) {
+                e.preventDefault();
+                toggleEditMode();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            updateNavButtons();
+        });
+
+        // Prevent accidental page reload when editing
+        window.addEventListener('beforeunload', function(e) {
+            if (currentEditingSection !== null) {
+                e.preventDefault();
+                e.returnValue = '¿Estás seguro de que quieres salir? Los cambios no guardados se perderán.';
+                return e.returnValue;
+            }
+        });
+    </script>
+</body>
+</html>
